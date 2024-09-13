@@ -65,25 +65,6 @@ async def upload_file(file: UploadFile = File(...)):
 
     return JSONResponse(content={"message": "File uploaded successfully", "file_id": new_file.id})
 
-@app.get("/list_files")
-async def list_files():
-    db = SessionLocal()
-    files = db.query(UploadedFile).all()
-    db.close()
-    
-    file_list = [
-        {
-            "id": file.id,
-            "file_name": file.file_name,
-            "uploaded_date": file.uploaded_date.isoformat(),
-            "size_mb": round(file.size_mb, 2),
-            "file_type": file.file_type
-        }
-        for file in files
-    ]
-    
-    return JSONResponse(content={"files": file_list})
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=5000)
