@@ -1,0 +1,69 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+header {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.vertical-menu {
+    position: fixed;
+    top: calc(20px + 24px + 1in); /* 20px padding + 24px header height + 1 inch */
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item {
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    color: #007bff;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    header {
+        top: 10px;
+        left: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .vertical-menu {
+        top: calc(10px + 20px + 1in); /* 10px padding + 20px header height + 1 inch */
+        left: 10px;
+    }
+
+    .menu-item {
+        font-size: 16px;
+    }
+}
