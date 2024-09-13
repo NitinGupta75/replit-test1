@@ -18,9 +18,13 @@
             <a href="#" class="menu-item">Configure</a>
         </nav>
         <div id="load-window" class="window">
-            <h2>Load</h2>
             <div class="load-options">
                 <a href="#" class="load-item" id="load-file">File</a>
+                <form id="file-upload-form" enctype="multipart/form-data">
+                    <input type="file" id="file-input" name="file" style="display: none;">
+                    <button type="button" id="file-upload-btn">Upload from Local</button>
+                </form>
+                <button id="google-drive-btn">Upload from Google Drive</button>
                 <a href="#" class="load-item" id="load-webpage">Webpage</a>
                 <a href="#" class="load-item" id="load-image">Image</a>
             </div>
