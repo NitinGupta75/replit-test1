@@ -4,12 +4,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const browseOption = document.getElementById('browse-option');
     const browseWindow = document.getElementById('browse-window');
     const fileList = document.getElementById('file-list');
+    const databaseInfo = document.getElementById('database-info');
     const loadFile = document.getElementById('load-file');
     const loadWebpage = document.getElementById('load-webpage');
     const loadImage = document.getElementById('load-image');
     const fileInput = document.getElementById('file-input');
     const fileUploadBtn = document.getElementById('file-upload-btn');
     const googleDriveBtn = document.getElementById('google-drive-btn');
+
+    let currentView = 'files';
+    let currentPage = 1;
+    const itemsPerPage = 10;
 
     loadOption.addEventListener('click', function(e) {
         e.preventDefault();
@@ -20,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         toggleWindow(browseWindow, browseOption);
         fetchAndDisplayFiles();
+        fetchAndDisplayDatabaseInfo();
     });
 
     // Close the windows when clicking outside of them
@@ -77,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('File uploaded successfully:', data);
             alert('File uploaded successfully!');
             fetchAndDisplayFiles();
+            fetchAndDisplayDatabaseInfo();
         })
         .catch(error => {
             console.error('Error uploading file:', error);
@@ -95,12 +102,55 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function fetchAndDisplayFiles() {
-        fetch('/files')
+    function toggleView() {
+        const fileListContainer = document.getElementById('file-list-container');
+        const databaseInfoContainer = document.getElementById('database-info-container');
+        const toggleViewBtn = document.getElementById('toggle-view-btn');
+
+        if (currentView === 'files') {
+            fileListContainer.style.display = 'none';
+            databaseInfoContainer.style.display = 'block';
+            toggleViewBtn.textContent = 'Show Files';
+            currentView = 'database';
+            fetchAndDisplayDatabaseInfo();
+        } else {
+            fileListContainer.style.display = 'block';
+            databaseInfoContainer.style.display = 'none';
+            toggleViewBtn.textContent = 'Show Database Info';
+            currentView = 'files';
+            fetchAndDisplayFiles();
+        }
+    }
+
+    function searchFiles() {
+        const searchInput = document.getElementById('search-input');
+        const searchTerm = searchInput.value.toLowerCase();
+        currentPage = 1;
+        fetchAndDisplayFiles(searchTerm);
+    }
+
+    function createPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const paginationElement = document.getElementById('pagination');
+        paginationElement.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.addEventListener('click', () => {
+                currentPage = i;
+                fetchAndDisplayFiles();
+            });
+            paginationElement.appendChild(pageButton);
+        }
+    }
+
+    function fetchAndDisplayFiles(searchTerm = '') {
+        fetch(`/files?page=${currentPage}&items_per_page=${itemsPerPage}&search=${searchTerm}`)
             .then(response => response.json())
-            .then(files => {
+            .then(data => {
                 fileList.innerHTML = '';
-                files.forEach(file => {
+                data.files.forEach(file => {
                     const fileElement = document.createElement('div');
                     fileElement.classList.add('file-item');
                     fileElement.innerHTML = `
@@ -111,6 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
                     fileList.appendChild(fileElement);
                 });
+
+                createPagination(data.total_files);
 
                 // Add event listeners for download buttons
                 const downloadButtons = document.querySelectorAll('.download-btn');
@@ -124,6 +176,26 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error fetching files:', error);
                 fileList.innerHTML = '<p>Error fetching files. Please try again.</p>';
+            });
+    }
+
+    function fetchAndDisplayDatabaseInfo() {
+        fetch('/database_info')
+            .then(response => response.json())
+            .then(info => {
+                document.getElementById('total-files').textContent = info.total_files;
+                document.getElementById('total-size').textContent = `${info.total_size_mb.toFixed(2)} MB`;
+                document.getElementById('latest-upload').textContent = info.latest_upload || 'N/A';
+                document.getElementById('latest-upload-date').textContent = info.latest_upload_date ? formatDate(info.latest_upload_date) : 'N/A';
+
+                // Display additional database information if needed
+                databaseInfo.innerHTML = `
+                    <p>Additional database information can be displayed here.</p>
+                `;
+            })
+            .catch(error => {
+                console.error('Error fetching database info:', error);
+                databaseInfo.innerHTML = '<p>Error fetching database information. Please try again.</p>';
             });
     }
 
@@ -155,4 +227,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(dateString);
         return date.toLocaleString();
     }
+
+    // Add event listeners for new functionalities
+    document.getElementById('toggle-view-btn').addEventListener('click', toggleView);
+    document.getElementById('search-input').addEventListener('input', searchFiles);
 });

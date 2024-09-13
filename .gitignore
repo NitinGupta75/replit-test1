@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Database
+*.sqlite3
+
+# Environment variables
+.env
+
+# Replit specific
+.replit
+.breakpoints
+replit.nix
+poetry.lock
+.upm/
+
+# Uploads directory (assuming we don't want to track uploaded files)
+uploads/
+
+# Miscellaneous
+.DS_Store
