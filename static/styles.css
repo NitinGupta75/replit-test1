@@ -45,7 +45,7 @@ h1 {
     color: #007bff;
 }
 
-/* Load window styles */
+/* Window styles */
 .window {
     display: none;
     position: fixed;
@@ -83,6 +83,46 @@ h1 {
     color: #ffffff;
 }
 
+/* Browse window styles */
+#browse-window {
+    min-width: 300px;
+    max-width: 500px;
+}
+
+#file-list {
+    margin-top: 10px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-item span {
+    margin-right: 10px;
+}
+
+.download-btn {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+    background-color: #0056b3;
+}
+
 /* Responsive styles */
 @media screen and (max-width: 600px) {
     body {
@@ -110,5 +150,10 @@ h1 {
     .window {
         min-width: 180px;
         left: 150px; /* Adjust for smaller screens */
+    }
+
+    #browse-window {
+        min-width: 250px;
+        max-width: 100%;
     }
 }
