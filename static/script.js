@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('file-input');
     const fileUploadBtn = document.getElementById('file-upload-btn');
     const googleDriveBtn = document.getElementById('google-drive-btn');
+    const fileList = document.getElementById('file-list');
 
     loadOption.addEventListener('click', function(e) {
         e.preventDefault();
@@ -71,10 +72,34 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log('File uploaded successfully:', data);
             alert('File uploaded successfully!');
+            fetchFileList(); // Fetch the updated file list after successful upload
         })
         .catch(error => {
             console.error('Error uploading file:', error);
             alert('Error uploading file. Please try again.');
         });
     }
+
+    function fetchFileList() {
+        fetch('/list_files')
+            .then(response => response.json())
+            .then(data => {
+                updateFileList(data.files);
+            })
+            .catch(error => {
+                console.error('Error fetching file list:', error);
+            });
+    }
+
+    function updateFileList(files) {
+        fileList.innerHTML = ''; // Clear existing list
+        files.forEach(file => {
+            const li = document.createElement('li');
+            li.textContent = `${file.file_name} (${file.size_mb} MB) - Uploaded on ${new Date(file.uploaded_date).toLocaleString()}`;
+            fileList.appendChild(li);
+        });
+    }
+
+    // Fetch the file list when the page loads
+    fetchFileList();
 });
