@@ -4,15 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const browseOption = document.getElementById('browse-option');
     const browseWindow = document.getElementById('browse-window');
     const fileList = document.getElementById('file-list');
-    const databaseInfo = document.getElementById('database-info');
-    const loadFile = document.getElementById('load-file');
     const loadWebpage = document.getElementById('load-webpage');
     const loadImage = document.getElementById('load-image');
     const fileInput = document.getElementById('file-input');
     const fileUploadBtn = document.getElementById('file-upload-btn');
     const googleDriveBtn = document.getElementById('google-drive-btn');
 
-    let currentView = 'files';
     let currentPage = 1;
     const itemsPerPage = 10;
 
@@ -25,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         toggleWindow(browseWindow, browseOption);
         fetchAndDisplayFiles();
-        fetchAndDisplayDatabaseInfo();
     });
 
     // Close the windows when clicking outside of them
@@ -36,11 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!browseWindow.contains(e.target) && e.target !== browseOption) {
             browseWindow.style.display = 'none';
         }
-    });
-
-    loadFile.addEventListener('click', function(e) {
-        e.preventDefault();
-        fileInput.click();
     });
 
     fileUploadBtn.addEventListener('click', function(e) {
@@ -83,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('File uploaded successfully:', data);
             alert('File uploaded successfully!');
             fetchAndDisplayFiles();
-            fetchAndDisplayDatabaseInfo();
         })
         .catch(error => {
             console.error('Error uploading file:', error);
@@ -99,26 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
             window.style.display = 'block';
         } else {
             window.style.display = 'none';
-        }
-    }
-
-    function toggleView() {
-        const fileListContainer = document.getElementById('file-list-container');
-        const databaseInfoContainer = document.getElementById('database-info-container');
-        const toggleViewBtn = document.getElementById('toggle-view-btn');
-
-        if (currentView === 'files') {
-            fileListContainer.style.display = 'none';
-            databaseInfoContainer.style.display = 'block';
-            toggleViewBtn.textContent = 'Show Files';
-            currentView = 'database';
-            fetchAndDisplayDatabaseInfo();
-        } else {
-            fileListContainer.style.display = 'block';
-            databaseInfoContainer.style.display = 'none';
-            toggleViewBtn.textContent = 'Show Database Info';
-            currentView = 'files';
-            fetchAndDisplayFiles();
         }
     }
 
@@ -154,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const fileElement = document.createElement('div');
                     fileElement.classList.add('file-item');
                     fileElement.innerHTML = `
-                        <span>${file.file_name}</span>
+                        <span title="${file.file_name}">${file.file_name}</span>
                         <span>${formatDate(file.uploaded_date)}</span>
                         <span>${file.size_mb.toFixed(2)} MB</span>
                         <button class="download-btn" data-id="${file.id}">Download</button>
@@ -176,26 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error fetching files:', error);
                 fileList.innerHTML = '<p>Error fetching files. Please try again.</p>';
-            });
-    }
-
-    function fetchAndDisplayDatabaseInfo() {
-        fetch('/database_info')
-            .then(response => response.json())
-            .then(info => {
-                document.getElementById('total-files').textContent = info.total_files;
-                document.getElementById('total-size').textContent = `${info.total_size_mb.toFixed(2)} MB`;
-                document.getElementById('latest-upload').textContent = info.latest_upload || 'N/A';
-                document.getElementById('latest-upload-date').textContent = info.latest_upload_date ? formatDate(info.latest_upload_date) : 'N/A';
-
-                // Display additional database information if needed
-                databaseInfo.innerHTML = `
-                    <p>Additional database information can be displayed here.</p>
-                `;
-            })
-            .catch(error => {
-                console.error('Error fetching database info:', error);
-                databaseInfo.innerHTML = '<p>Error fetching database information. Please try again.</p>';
             });
     }
 
@@ -228,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.toLocaleString();
     }
 
-    // Add event listeners for new functionalities
-    document.getElementById('toggle-view-btn').addEventListener('click', toggleView);
+    // Add event listener for search functionality
     document.getElementById('search-input').addEventListener('input', searchFiles);
 });

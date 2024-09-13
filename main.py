@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, File, UploadFile, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, FileResponse
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, func
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -50,26 +50,6 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 @app.get("/")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
-@app.get("/database_info")
-async def get_database_info():
-    try:
-        db = SessionLocal()
-        total_files = db.query(UploadedFile).count()
-        total_size = db.query(func.sum(UploadedFile.size_mb)).scalar() or 0
-        latest_upload = db.query(UploadedFile).order_by(UploadedFile.uploaded_date.desc()).first()
-        db.close()
-
-        return {
-            "total_files": total_files,
-            "total_size_mb": round(total_size, 2),
-            "latest_upload": latest_upload.file_name if latest_upload else None,
-            "latest_upload_date": latest_upload.uploaded_date if latest_upload else None
-        }
-    except Exception as e:
-        logger.error(f"Error getting database info: {str(e)}")
-        logger.error(traceback.format_exc())
-        raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.get("/files")
 async def list_files(page: int = 1, items_per_page: int = 10, search: str = ''):

@@ -19,7 +19,6 @@
         </nav>
         <div id="load-window" class="window">
             <div class="load-options">
-                <a href="#" class="load-item" id="load-file">File</a>
                 <form id="file-upload-form" enctype="multipart/form-data">
                     <input type="file" id="file-input" name="file" style="display: none;">
                     <button type="button" id="file-upload-btn">Upload from Local</button>
@@ -30,28 +29,12 @@
             </div>
         </div>
         <div id="browse-window" class="window">
-            <h2>Browse Files and Database</h2>
             <div class="browse-controls">
-                <button id="toggle-view-btn">Toggle View</button>
                 <input type="text" id="search-input" placeholder="Search files...">
             </div>
             <div id="file-list-container">
-                <h3>Uploaded Files</h3>
                 <div id="file-list"></div>
                 <div id="pagination"></div>
-            </div>
-            <div id="database-info-container" style="display: none;">
-                <h3>Database Information</h3>
-                <div id="database-info"></div>
-                <div id="database-stats">
-                    <h4>Database Statistics</h4>
-                    <ul>
-                        <li>Total Files: <span id="total-files"></span></li>
-                        <li>Total Size: <span id="total-size"></span></li>
-                        <li>Latest Upload: <span id="latest-upload"></span></li>
-                        <li>Latest Upload Date: <span id="latest-upload-date"></span></li>
-                    </ul>
-                </div>
             </div>
         </div>
     </main>
